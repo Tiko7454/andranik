@@ -1,21 +1,94 @@
 import cv2
+import numpy as np
 import matplotlib.pyplot as plt
 
 
-def downscale_and_canny(image_path: str, d: int = 128, t1: int = 100, t2: int = 200):
-    image = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
-    image = cv2.resize(image, (d, d), interpolation=cv2.INTER_AREA)
-    edges = cv2.Canny(image, t1, t2)
+def get_image(image_path: str, scale):
+    return cv2.imread(image_path, scale)
 
+
+_KERNEL = np.array(
+    [
+        [-1, 0, 1],
+        [-1, 0, 1],
+        [-1, 0, 1],
+    ]
+)
+
+KERNEL = _KERNEL / np.sum(abs(_KERNEL))
+
+
+def get_horizontal(image, depth=-1):
+    return _convolution(image, KERNEL.T, depth)
+
+
+def get_vertical(image, depth=-1):
+    return _convolution(image, KERNEL, depth)
+
+
+def _convolution(image, kernel, depth):
+    return abs(cv2.filter2D(image, depth, kernel)) + abs(
+        cv2.filter2D(image, depth, -kernel)
+    )
+
+
+def show(old, new, axis="on"):
     plt.figure(figsize=(10, 5))
     plt.subplot(1, 2, 1)
-    plt.imshow(image, cmap="gray")
+    plt.imshow(old, cmap="gray")
+    # plt.imshow(old)
     plt.title("Original Image")
-    plt.axis("off")
+    plt.axis(axis)
 
     plt.subplot(1, 2, 2)
-    plt.imshow(edges, cmap="gray")
+    plt.imshow(new, cmap="gray")
+    # plt.imshow(new)
     plt.title("Canny Edge Detection")
-    plt.axis("off")
+    plt.axis(axis)
 
     plt.show()
+
+
+def find_vertical_peaks(convolved_image, show=True):
+    depend_vertical = np.sum(convolved_image, 0)
+    peaks = _find_peaks(depend_vertical)
+    if show:
+        plt.plot(depend_vertical)
+        plt.scatter(peaks, depend_vertical[peaks], c="r")
+        plt.show()
+    return peaks
+
+
+def find_horizontal_peaks(convolved_image, show=True):
+    depend_horizontal = np.sum(convolved_image, 1)
+    peaks = _find_peaks(depend_horizontal)
+    if show:
+        plt.plot(depend_horizontal)
+        plt.scatter(peaks, depend_horizontal[peaks], c="r")
+        plt.show()
+    return peaks
+
+
+def _find_peaks(depend, in_top=50):
+    sorted_indexes = np.argsort(depend)
+
+    peaks = []
+    for i in range(in_top):
+        x = sorted_indexes[-(i + 1)]
+
+        if 0 < x < (depend.shape[0] - 1):
+            if depend[x] >= depend[x + 1] and depend[x] >= depend[x - 1]:
+                peaks.append(x)
+    return peaks[:9]
+
+
+def draw_vertical_peaks(image, peaks):
+    for x in peaks:
+        cv2.line(image, (x, 0), (x, image.shape[0]), (0, 0, 255), 1)
+    return image
+
+
+def draw_horizontal_peaks(image, peaks):
+    for y in peaks:
+        cv2.line(image, (0, y), (image.shape[1], y), (0, 0, 255), 1)
+    return image
