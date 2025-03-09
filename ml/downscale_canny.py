@@ -1,6 +1,21 @@
 import cv2
 import numpy as np
 import matplotlib.pyplot as plt
+from copy import copy
+
+
+class Peaks:
+    def __init__(self, vpeaks, hpeaks):
+        self.vpeaks = vpeaks
+        self.hpeaks = hpeaks
+
+    def draw_peaks(self, image):
+        image = copy(image)
+        for x in self.vpeaks:
+            cv2.line(image, (x, 0), (x, image.shape[0]), (0, 0, 255), 1)
+        for y in self.hpeaks:
+            cv2.line(image, (0, y), (image.shape[1], y), (0, 0, 255), 1)
+        return image
 
 
 def get_image(image_path: str, scale):
@@ -82,13 +97,11 @@ def _find_peaks(depend, in_top=50):
     return peaks[:9]
 
 
-def draw_vertical_peaks(image, peaks):
-    for x in peaks:
-        cv2.line(image, (x, 0), (x, image.shape[0]), (0, 0, 255), 1)
-    return image
+def pipeline(input_, *functions):
+    for function in functions:
+        input_ = function(input_)
+    return input_
 
 
-def draw_horizontal_peaks(image, peaks):
-    for y in peaks:
-        cv2.line(image, (0, y), (image.shape[1], y), (0, 0, 255), 1)
-    return image
+def gaussian_blur(image):
+    return cv2.GaussianBlur(image, (5, 5), 0)

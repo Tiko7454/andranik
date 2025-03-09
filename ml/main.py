@@ -1,28 +1,27 @@
 from downscale_canny import (
+    Peaks,
     find_horizontal_peaks,
     find_vertical_peaks,
+    gaussian_blur,
     get_horizontal,
     get_image,
+    pipeline,
     show,
     get_vertical,
     find_vertical_peaks,
-    draw_vertical_peaks,
-    draw_horizontal_peaks,
 )
 import cv2
 
 
 def main():
     image = get_image("test.png", cv2.IMREAD_GRAYSCALE)
-    imv = cv2.GaussianBlur(get_vertical(image), (5, 5), 0)
-    imh = cv2.GaussianBlur(get_horizontal(image), (5, 5), 0)
-    vpeaks = find_vertical_peaks(imv)
-    hpeaks = find_horizontal_peaks(imh)
+    vpeaks = pipeline(image, get_vertical, gaussian_blur, find_vertical_peaks)
+    hpeaks = pipeline(image, get_horizontal, gaussian_blur, find_horizontal_peaks)
+    peaks = Peaks(vpeaks, hpeaks)
 
     bgr = cv2.cvtColor(image, cv2.COLOR_GRAY2BGR)
-    img = draw_vertical_peaks(bgr, vpeaks)
-    img = draw_horizontal_peaks(img, hpeaks)
-    show(imv, img)
+    bgr_with_peaks = peaks.draw_peaks(bgr)
+    show(bgr, bgr_with_peaks)
 
 
 if __name__ == "__main__":
