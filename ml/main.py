@@ -1,4 +1,4 @@
-from downscale_canny import (
+from edge_detection import (
     Peaks,
     find_horizontal_peaks,
     find_vertical_peaks,
