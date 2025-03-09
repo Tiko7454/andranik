@@ -2,8 +2,8 @@ import cv2
 import matplotlib.pyplot as plt
 
 
-def downscale_and_canny(image, d=128, t1=100, t2=200):
-    image = cv2.imread("image.png", cv2.IMREAD_GRAYSCALE)
+def downscale_and_canny(image_path: str, d: int = 128, t1: int = 100, t2: int = 200):
+    image = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
     image = cv2.resize(image, (d, d), interpolation=cv2.INTER_AREA)
     edges = cv2.Canny(image, t1, t2)
 
