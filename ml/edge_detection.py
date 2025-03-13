@@ -94,7 +94,8 @@ def _find_peaks(depend, in_top=50):
         if 0 < x < (depend.shape[0] - 1):
             if depend[x] >= depend[x + 1] and depend[x] >= depend[x - 1]:
                 peaks.append(x)
-    return peaks[:9]
+    start, end = sorted(peaks[:2])
+    return np.linspace(start, end, 9, dtype=int).tolist()
 
 
 def pipeline(input_, *functions):
