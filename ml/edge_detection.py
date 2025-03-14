@@ -51,20 +51,18 @@ def show(old, new, axis="on"):
     plt.figure(figsize=(10, 5))
     plt.subplot(1, 2, 1)
     plt.imshow(old, cmap="gray")
-    # plt.imshow(old)
     plt.title("Original Image")
     plt.axis(axis)
 
     plt.subplot(1, 2, 2)
     plt.imshow(new, cmap="gray")
-    # plt.imshow(new)
     plt.title("Edge Detection")
     plt.axis(axis)
 
     plt.show()
 
 
-def find_vertical_peaks(convolved_image, show=True):
+def find_vertical_peaks(convolved_image, show=False):
     depend_vertical = np.sum(convolved_image, 0)
     peaks = _find_peaks(depend_vertical)
     if show:
@@ -74,7 +72,7 @@ def find_vertical_peaks(convolved_image, show=True):
     return peaks
 
 
-def find_horizontal_peaks(convolved_image, show=True):
+def find_horizontal_peaks(convolved_image, show=False):
     depend_horizontal = np.sum(convolved_image, 1)
     peaks = _find_peaks(depend_horizontal)
     if show:
@@ -94,7 +92,7 @@ def _find_peaks(depend):
     edges = 9
     metrics = {}
     for index, i in enumerate(peaks):
-        for j in peaks[index + edges -2 :]:
+        for j in peaks[index + edges -1 :]:
             metrics[(i, j)] = np.sum(depend[np.linspace(i, j, edges, dtype=int)])
 
     i, j = max(metrics, key=metrics.get)
@@ -108,4 +106,4 @@ def pipeline(input_, *functions):
 
 
 def gaussian_blur(image):
-    return cv2.GaussianBlur(image, (5, 5), 0)
+    return cv2.GaussianBlur(image, (10, 10), 0)
