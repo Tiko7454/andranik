@@ -35,7 +35,7 @@ def main():
     bgr_with_peaks = peaks.draw_peaks(bgr)
     # show(bgr, bgr_with_peaks)
 
-    transform = transforms.Compose([transforms.ToTensor(), transforms.Resize(48)])
+    transform = transforms.Compose([transforms.ToTensor(), transforms.Resize(48), transforms.CenterCrop(48)])
     xs = sorted(vpeaks)
     ys = sorted(hpeaks)
     new_bgrs = []
