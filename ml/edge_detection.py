@@ -84,18 +84,20 @@ def find_horizontal_peaks(convolved_image, show=True):
     return peaks
 
 
-def _find_peaks(depend, in_top=50):
+def _find_peaks(depend):
+    m = np.max(depend)
+    inds = np.where(depend > m / 3)[0]
     sorted_indexes = np.argsort(depend)
+    peaks = sorted_indexes[::-1][:50]
+    peaks = sorted(list(set(inds) & set(peaks)))
 
-    peaks = []
-    for i in range(in_top):
-        x = sorted_indexes[-(i + 1)]
+    metrics = {}
+    for index, i in enumerate(peaks):
+        for j in peaks[index + 7 :]:
+            metrics[(i, j)] = np.sum(depend[np.linspace(i, j, 9, dtype=int)])
 
-        if 0 < x < (depend.shape[0] - 1):
-            if depend[x] >= depend[x + 1] and depend[x] >= depend[x - 1]:
-                peaks.append(x)
-    start, end = sorted(peaks[:2])
-    return np.linspace(start, end, 9, dtype=int).tolist()
+    i, j = max(metrics, key=metrics.get)
+    return np.linspace(i, j, 9, dtype=int).tolist()
 
 
 def pipeline(input_, *functions):
