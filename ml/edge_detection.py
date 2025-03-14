@@ -58,7 +58,7 @@ def show(old, new, axis="on"):
     plt.subplot(1, 2, 2)
     plt.imshow(new, cmap="gray")
     # plt.imshow(new)
-    plt.title("Canny Edge Detection")
+    plt.title("Edge Detection")
     plt.axis(axis)
 
     plt.show()
@@ -91,13 +91,14 @@ def _find_peaks(depend):
     peaks = sorted_indexes[::-1][:50]
     peaks = sorted(list(set(inds) & set(peaks)))
 
+    edges = 9
     metrics = {}
     for index, i in enumerate(peaks):
-        for j in peaks[index + 7 :]:
-            metrics[(i, j)] = np.sum(depend[np.linspace(i, j, 9, dtype=int)])
+        for j in peaks[index + edges -2 :]:
+            metrics[(i, j)] = np.sum(depend[np.linspace(i, j, edges, dtype=int)])
 
     i, j = max(metrics, key=metrics.get)
-    return np.linspace(i, j, 9, dtype=int).tolist()
+    return np.linspace(i, j, edges, dtype=int).tolist()
 
 
 def pipeline(input_, *functions):
