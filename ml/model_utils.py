@@ -1,5 +1,5 @@
 import torch
-from model.chess_piece_nn import ChessPieceNN
+from .model.chess_piece_nn import ChessPieceNN
 
 
 def load_model(path: str) -> ChessPieceNN:
