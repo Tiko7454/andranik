@@ -1,0 +1,3 @@
+[submodule "fen-to-image"]
+	path = fen-to-image
+	url = https://github.com/Tiko7454/fen-to-image/
