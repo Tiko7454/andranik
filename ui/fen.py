@@ -33,6 +33,9 @@ class FEN:
         self._can_b_queenside = True
         self._epilogue = "- 0 1"
 
+    def __eq__(self, fen: str) -> bool:
+        return self._main_fen == fen
+
     def set_white_move(self) -> "FEN":
         self._move = "w"
         return self

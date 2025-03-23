@@ -11,7 +11,7 @@ transform = transforms.Compose([transforms.ToTensor(), transforms.CenterCrop(48)
 dataset = ChessPiecesDataset(data_dir, transform)
 
 train_loader = torch.utils.data.DataLoader(
-    dataset, batch_size=16, shuffle=True, num_workers=0
+    dataset, batch_size=16*64, shuffle=True, num_workers=8
 )
 
 model = ChessPieceNN()
@@ -27,7 +27,7 @@ else:
     device = torch.device("cpu")
 
 model.train()
-for epoch in range(10):
+for epoch in range(5):
     pbar = tqdm(train_loader)
     total_correct = 0
     total_samples = 0

@@ -74,7 +74,12 @@ def get_model_result(filename, model_path):
 
     classes = np.array(classes).reshape(8, 8).transpose()
     classes_pretty = np.array(classes_pretty).reshape(8, 8).transpose()
+    # print_chess(classes_pretty)
 
+    return classes
+
+
+def print_chess(classes_pretty):
     for i, line in enumerate(classes_pretty):
         print(f"{8-i} ", end="")
         for char in line:
@@ -84,5 +89,3 @@ def get_model_result(filename, model_path):
     for letter in ascii_letters[:8]:
         print(f" {letter} ", end="")
     print()
-
-    return classes
