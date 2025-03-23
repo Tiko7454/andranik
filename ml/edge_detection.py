@@ -18,8 +18,13 @@ class Peaks:
         return image
 
 
-def get_image(image_path: str, scale):
-    return cv2.imread(image_path, scale)
+def get_image(image_path: str):
+    image = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
+    top, bottom, left, right = 50, 50, 50, 50
+    grey_margin = 192
+    return cv2.copyMakeBorder(
+        image, top, bottom, left, right, cv2.BORDER_CONSTANT, None, value=grey_margin
+    )
 
 
 _KERNEL = np.array(
@@ -84,7 +89,7 @@ def find_horizontal_peaks(convolved_image, show=False):
 
 def _find_peaks(depend):
     m = np.max(depend)
-    inds = np.where(depend > m / 3)[0]
+    inds = np.where(depend > m / 4)[0]
     sorted_indexes = np.argsort(depend)
     peaks = sorted_indexes[::-1][:50]
     peaks = sorted(list(set(inds) & set(peaks)))
@@ -92,7 +97,7 @@ def _find_peaks(depend):
     edges = 9
     metrics = {}
     for index, i in enumerate(peaks):
-        for j in peaks[index + edges -1 :]:
+        for j in peaks[index + edges - 1 :]:
             metrics[(i, j)] = np.sum(depend[np.linspace(i, j, edges, dtype=int)])
 
     i, j = max(metrics, key=metrics.get)

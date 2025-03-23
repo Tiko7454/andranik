@@ -24,7 +24,7 @@ from string import ascii_letters
 def get_model_result(filename, model_path):
     if not path.isfile(filename):
         exit(1)
-    image = get_image(filename, cv2.IMREAD_GRAYSCALE)
+    image = get_image(filename)
     vpeaks = pipeline(image, get_vertical, find_vertical_peaks)
     hpeaks = pipeline(image, get_horizontal, find_horizontal_peaks)
 
