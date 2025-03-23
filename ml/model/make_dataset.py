@@ -25,7 +25,7 @@ print("Path to dataset files:", path)
 directory = "train"
 data_directory = "data"
 for img_name in tqdm(
-    os.listdir(os.path.join(path, directory))[:20000], desc="Processing"
+    os.listdir(os.path.join(path, directory)), desc="Processing"
 ):
     fen = img_name.split(".")[0].replace("-", "/")
     board = Board(fen)
@@ -38,6 +38,8 @@ for img_name in tqdm(
 
     # squares = {}
     result = defaultdict(list)
+    has_even = False
+    has_odd = False
     for i in range(rows):
         for j in range(cols):
             x_start = j * square_width
@@ -54,6 +56,17 @@ for img_name in tqdm(
             # squares[square_name] = square
 
             piece_notation = get_piece_notation(board, square_name)
+
+            if piece_notation == 'ee':
+                if (i+j) % 2 == 0:
+                    if has_even:
+                        continue
+                    has_even = True
+                else:
+                    if has_odd:
+                        continue
+                    has_odd = True
+
             filename = str(abs(hash((fen, i, j))))
             filepath = f"{data_directory}/{piece_notation}/{filename}.png"
             cv2.imwrite(filepath, square)
