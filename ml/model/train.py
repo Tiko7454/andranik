@@ -27,7 +27,7 @@ else:
     device = torch.device("cpu")
 
 model.train()
-for epoch in range(5):
+for epoch in range(3):
     pbar = tqdm(train_loader)
     total_correct = 0
     total_samples = 0
