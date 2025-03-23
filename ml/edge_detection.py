@@ -20,8 +20,8 @@ class Peaks:
 
 def get_image(image_path: str):
     image = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
-    top, bottom, left, right = 50, 50, 50, 50
-    grey_margin = 192
+    top, bottom, left, right = 1, 1, 1, 1
+    grey_margin = 0
     return cv2.copyMakeBorder(
         image, top, bottom, left, right, cv2.BORDER_CONSTANT, None, value=grey_margin
     )
@@ -89,7 +89,7 @@ def find_horizontal_peaks(convolved_image, show=False):
 
 def _find_peaks(depend):
     m = np.max(depend)
-    inds = np.where(depend > m / 4)[0]
+    inds = np.where(depend > m / 10)[0]
     sorted_indexes = np.argsort(depend)
     peaks = sorted_indexes[::-1][:50]
     peaks = sorted(list(set(inds) & set(peaks)))
